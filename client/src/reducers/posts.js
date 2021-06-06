@@ -11,3 +11,5 @@ export default (posts = [], action) => {
 			return posts;
 	}
 };
+
+// export default reducer;
