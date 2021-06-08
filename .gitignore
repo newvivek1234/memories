@@ -25,4 +25,4 @@ yarn-error.log*
 
 # Personal Computer
 .vscode
-.env
+build
