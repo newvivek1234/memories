@@ -8,9 +8,11 @@ import {
 	Container,
 } from "@material-ui/core";
 import { GoogleLogin } from "react-google-login";
+import { useDispatch } from "react-redux";
+import { useHistory } from "react-router-dom";
 
-import Icon from "./Icon.js";
 import LockOutLinedIcon from "@material-ui/icons/LockOpenOutlined";
+import Icon from "./Icon.js";
 import useStyles from "./styles.js";
 import Input from "./Input.js";
 
@@ -20,6 +22,10 @@ const Auth = () => {
 
 	const [isSignup, setIsSignup] = useState(false);
 
+	const dispatch = useDispatch();
+
+	const history = useHistory();
+
 	const handleShowPassword = () =>
 		setShowPassword((prevShowPassword) => !prevShowPassword);
 	const handleSubmit = () => {};
@@ -28,6 +34,23 @@ const Auth = () => {
 	const switchMode = () => {
 		setIsSignup((prevIsSignup) => !prevIsSignup);
 		handleShowPassword(false);
+	};
+
+	const googleSuccess = async (res) => {
+		const result = res?.profileObj;
+		const token = res?.tokenId;
+
+		try {
+			dispatch({ type: "AUTH", data: { result, token } });
+			history.push("/");
+		} catch (error) {
+			console.log(error);
+		}
+	};
+	
+	const googleFailure = (error) => {
+		console.log(error);
+		console.log("Google Sign In was unsuccessful. Try Again Later");
 	};
 
 	return (
@@ -78,8 +101,17 @@ const Auth = () => {
 							/>
 						)}
 					</Grid>
+					<Button
+						type="submit"
+						fullWidth
+						variant="contained"
+						color="primary"
+						className={classes.submit}
+					>
+						{isSignup ? "Sign Up" : "Sign In"}
+					</Button>
 					<GoogleLogin
-						clientId="Google ID"
+						clientId="1086743968502-8fojqsg6du2q97e8opquvt3k263qsovv.apps.googleusercontent.com"
 						render={(renderProps) => (
 							<Button
 								className={classes.googleButton}
@@ -93,16 +125,11 @@ const Auth = () => {
 								Google Sign In
 							</Button>
 						)}
+						onSuccess={googleSuccess}
+						onFailure={googleFailure}
+						cookiePolicy="single_host_origin"
 					/>
-					<Button
-						type="submit"
-						fullWidth
-						variant="contained"
-						color="primary"
-						className={classes.submit}
-					>
-						{isSignup ? "Sign Up" : "Sign In"}
-					</Button>
+
 					<Grid conatiner justify="flex-end">
 						<Grid item>
 							<Button onClick={switchMode}>
