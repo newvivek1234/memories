@@ -18,7 +18,7 @@ const Input = ({
 				name={name}
 				onChange={handleChange}
 				variant="outlined"
-				required
+				required 
 				fullWidth
 				label={label}
 				autoFocus={autoFocus}
@@ -32,8 +32,8 @@ const Input = ({
 											{type === "password" ? <Visibility /> : <VisibilityOff />}
 										</IconButton>
 									</InputAdornment>
-								),
-						  }
+							),
+						}
 						: null
 				}
 			/>

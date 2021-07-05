@@ -15,25 +15,44 @@ import LockOutLinedIcon from "@material-ui/icons/LockOpenOutlined";
 import Icon from "./Icon.js";
 import useStyles from "./styles.js";
 import Input from "./Input.js";
+import { signup, signin } from "../../actions/auth.js";
+
+const initialState = {
+	firstName: "",
+	lastName: "",
+	email: "",
+	password: "",
+	confirmPassword: "",
+};
 
 const Auth = () => {
 	const classes = useStyles();
 	const [showPassword, setShowPassword] = useState(false);
-
 	const [isSignup, setIsSignup] = useState(false);
-
+	const [formData, setFormData] = useState(initialState);
 	const dispatch = useDispatch();
-
 	const history = useHistory();
 
 	const handleShowPassword = () =>
 		setShowPassword((prevShowPassword) => !prevShowPassword);
-	const handleSubmit = () => {};
-	const handleChange = () => {};
+
+	const handleSubmit = (e) => {
+		e.preventDefault();
+
+		if (isSignup) {
+			dispatch(signup(formData, history));
+		} else {
+			dispatch(signin(formData, history));
+		}
+	};
+
+	const handleChange = (e) => {
+		setFormData({ ...formData, [e.target.name]: e.target.value });
+	};
 
 	const switchMode = () => {
 		setIsSignup((prevIsSignup) => !prevIsSignup);
-		handleShowPassword(false);
+		setShowPassword(false);
 	};
 
 	const googleSuccess = async (res) => {
@@ -47,7 +66,7 @@ const Auth = () => {
 			console.log(error);
 		}
 	};
-	
+
 	const googleFailure = (error) => {
 		console.log(error);
 		console.log("Google Sign In was unsuccessful. Try Again Later");
